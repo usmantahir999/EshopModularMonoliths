@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Data
 {
-    internal class CatalogDbContext
+    public class CatalogDbContext
     {
     }
 }
