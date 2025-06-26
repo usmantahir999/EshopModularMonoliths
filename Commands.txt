@@ -1,0 +1,10 @@
+Check postres working in docker container:
+---go to container exec tab
+
+psql -U postgres
+---list db
+\l
+
+---connect db
+
+\c EShopDb
