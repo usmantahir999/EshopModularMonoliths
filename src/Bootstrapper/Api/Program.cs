@@ -9,9 +9,9 @@ builder.Services.AddBasketModule(builder.Configuration)
 var app = builder.Build();
 
 //Configure the HTTP request pipeline.
-app.UseBasketModule()
-                .UseCatalogModule()
-                .UseBasketModule();
+app.UseCatalogModule()
+                .UseBasketModule()
+                .UseOrderingModule();
 
 app.Run();
  
