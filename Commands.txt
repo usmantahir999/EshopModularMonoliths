@@ -8,3 +8,6 @@ psql -U postgres
 ---connect db
 
 \c EShopDb
+
+Migrations in specific folder:
+Add-Migration InitialCreate -OutputDir Data\Migrations

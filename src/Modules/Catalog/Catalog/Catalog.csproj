@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Seed\" />
-    <Folder Include="Products\Exceptions\" />
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Products\Features\CreateProduct\" />
     <Folder Include="Products\Features\DeleteProduct\" />
     <Folder Include="Products\Features\GetProductByCategory\" />
