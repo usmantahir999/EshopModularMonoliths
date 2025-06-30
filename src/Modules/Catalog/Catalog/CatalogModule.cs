@@ -1,8 +1,10 @@
 ﻿
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
+using Shared.Data.Seed;
 
 namespace Catalog
 {
@@ -19,6 +21,7 @@ namespace Catalog
                 //options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseNpgsql(connectionString);
             });
+            services.AddScoped<IDataSeeder, CatalogDataSeeder>();
             return services;
         }
 
