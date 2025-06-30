@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
@@ -15,11 +16,17 @@ namespace Catalog
         {
             // Register services, repositories, etc. for the Catalog module here
             // Example: services.AddScoped<ICatalogService, CatalogService>();
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+            });
             //Data - infrastructure services
             var connectionString = configuration.GetConnectionString("Database");
+            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
             services.AddDbContext<CatalogDbContext>((sp, options) =>
             {
-                options.AddInterceptors(new AuditableEntityInterceptor());
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseNpgsql(connectionString);
             });
             services.AddScoped<IDataSeeder, CatalogDataSeeder>();
