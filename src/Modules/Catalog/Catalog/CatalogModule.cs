@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
+using Shared.Data.Interceptors;
 using Shared.Data.Seed;
 
 namespace Catalog
@@ -18,7 +19,7 @@ namespace Catalog
             var connectionString = configuration.GetConnectionString("Database");
             services.AddDbContext<CatalogDbContext>((sp, options) =>
             {
-                //options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                options.AddInterceptors(new AuditableEntityInterceptor());
                 options.UseNpgsql(connectionString);
             });
             services.AddScoped<IDataSeeder, CatalogDataSeeder>();
