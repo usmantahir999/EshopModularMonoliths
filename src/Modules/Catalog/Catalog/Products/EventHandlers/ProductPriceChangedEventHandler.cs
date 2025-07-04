@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Catalog.Products.EventHandlers
+﻿namespace Catalog.Products.EventHandlers
 {
-    internal class ProductPriceChangedEventHandler
+    public class ProductPriceChangedEventHandler(ILogger<ProductPriceChangedEventHandler> logger) : INotificationHandler<ProductPriceChangedEvent>
     {
+        public async Task Handle(ProductPriceChangedEvent notification, CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Domain event handled: {DomainEvent}", notification.GetType().Name);
+            await Task.CompletedTask;
+        }
     }
 }
