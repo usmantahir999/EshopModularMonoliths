@@ -1,7 +1,7 @@
 ﻿
 namespace Catalog.Products.Features.DeleteProduct
 {
-    public record DeleteProductCommand(int ProductId) : ICommand<DeleteProductResult>;
+    public record DeleteProductCommand(Guid ProductId) : ICommand<DeleteProductResult>;
 
     public record DeleteProductResult(bool IsSuccess);
 
