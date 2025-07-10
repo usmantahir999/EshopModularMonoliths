@@ -1,7 +1,4 @@
-﻿
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
@@ -20,6 +17,7 @@ namespace Catalog
             {
                 config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
             });
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //Data - infrastructure services
             var connectionString = configuration.GetConnectionString("Database");
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
