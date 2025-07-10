@@ -1,6 +1,11 @@
-﻿namespace Catalog.Products.Exceptions
+﻿using Shared.Exceptions;
+
+namespace Catalog.Products.Exceptions
 {
-    public class ProductNotFoundException 
+    public class ProductNotFoundException : NotFoundException
     {
+        public ProductNotFoundException(Guid id) : base("Product",id)
+        {
+        }
     }
 }
