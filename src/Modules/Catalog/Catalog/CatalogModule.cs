@@ -18,6 +18,7 @@ namespace Catalog
             {
                 config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
                 config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //Data - infrastructure services
