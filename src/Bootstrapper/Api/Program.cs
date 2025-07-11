@@ -1,6 +1,5 @@
 
-
-
+using Shared.Exceptions.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCarterWithAssemblies(typeof(CatalogModule).Assembly);
@@ -8,6 +7,7 @@ builder.Services.AddCarterWithAssemblies(typeof(CatalogModule).Assembly);
 builder.Services.AddBasketModule(builder.Configuration)
                 .AddCatalogModule(builder.Configuration)
                 .AddOrderingModule(builder.Configuration);
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 var app = builder.Build();
 
 //Configure the HTTP request pipeline.
@@ -16,6 +16,6 @@ app.UseCatalogModule()
                 .UseBasketModule()
                 .UseOrderingModule();
 
-app.UseExceptionHandler();
+app.UseExceptionHandler(options => { });
 app.Run();
  
