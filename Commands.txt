@@ -11,3 +11,7 @@ psql -U postgres
 
 Migrations in specific folder:
 Add-Migration InitialCreate -OutputDir Data\Migrations
+
+Migration for Basket:
+Add-Migration InitialCreate -OutputDir Data/Migrations -Project Basket -StartupProject Api -Context BasketDbContext
+Update-Database -Context BasketDbContext
