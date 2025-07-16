@@ -9,3 +9,6 @@ global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Basket.Data;
 global using Microsoft.EntityFrameworkCore.Diagnostics;
 global using Shared.Data.Interceptors;
+global using Basket.Basket.Dtos;
+global using FluentValidation;
+global using Shared.CQRS;
