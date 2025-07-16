@@ -1,4 +1,6 @@
 ﻿
+using Shared.Data;
+
 namespace Basket
 {
     public static class BasketModule
@@ -19,6 +21,7 @@ namespace Basket
 
         public static IApplicationBuilder UseBasketModule(this IApplicationBuilder app)
         {
+            app.UseMigration<BasketDbContext>();
             return app;
         }
     }
