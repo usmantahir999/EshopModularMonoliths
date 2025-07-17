@@ -15,3 +15,8 @@ global using Shared.CQRS;
 global using Basket.Basket.Exceptions;
 global using Shared.Exceptions;
 global using Mapster;
+global using Carter;
+global using MediatR;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Routing;
+global using System.Security.Claims;
