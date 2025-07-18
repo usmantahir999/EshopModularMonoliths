@@ -9,10 +9,9 @@ namespace Basket.Basket.Features.CreateBasket
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             app.MapPost("/basket",
-            async (CreateBasketRequest request, ISender sender, ClaimsPrincipal user) =>
+            async (CreateBasketRequest request, ISender sender) =>
             {
-                var userName = user.Identity!.Name;
-                var updatedShoppingCart = request.ShoppingCart with { UserName = userName };
+                var updatedShoppingCart = request.ShoppingCart with { UserName = request.ShoppingCart.UserName };
 
                 var command = new CreateBasketCommand(updatedShoppingCart);
 
