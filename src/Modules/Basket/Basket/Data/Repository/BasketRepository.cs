@@ -1,24 +1,40 @@
 ﻿namespace Basket.Data.Repository
 {
-    internal class BasketRepository : IBasketRepository
+    public class BasketRepository(BasketDbContext dbContext) : IBasketRepository
     {
-        public Task<ShoppingCart> GetBasket(string userName, bool asNoTracking = true, CancellationToken cancellationToken = default)
+        public async Task<ShoppingCart> GetBasket(string userName, bool asNoTracking = true, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var query = dbContext.ShoppingCarts
+            .Include(x => x.Items)
+            .Where(x => x.UserName == userName);
+
+            if (asNoTracking)
+            {
+                query.AsNoTracking();
+            }
+
+            var basket = await query.SingleOrDefaultAsync(cancellationToken);
+
+            return basket ?? throw new BasketNotFoundException(userName);
         }
-        public Task<ShoppingCart> CreateBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
+        public async Task<ShoppingCart> CreateBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            dbContext.ShoppingCarts.Add(basket);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return basket;
         }
 
-        public Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var basket = await GetBasket(userName, false, cancellationToken);
+            dbContext.ShoppingCarts.Remove(basket);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return true;
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

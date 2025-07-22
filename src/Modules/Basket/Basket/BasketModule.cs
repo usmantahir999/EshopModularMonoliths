@@ -1,5 +1,5 @@
 ﻿
-using Shared.Data;
+
 
 namespace Basket
 {
@@ -7,6 +7,7 @@ namespace Basket
     {
         public static IServiceCollection AddBasketModule(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IBasketRepository, BasketRepository>();
             //Data - infrastructure services
             var connectionString = configuration.GetConnectionString("Database");
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
