@@ -12,19 +12,14 @@ namespace Basket.Basket.Features.RemoveItemFromBasket
             RuleFor(x => x.ProductId).NotEmpty().WithMessage("ProductId is required");
         }
     }
-    internal class RemoveItemFromBasketHandler(BasketDbContext dbContext) : ICommandHandler<RemoveItemFromBasketCommand, RemoveItemFromBasketResult>
+    internal class RemoveItemFromBasketHandler(IBasketRepository basketRepository) : ICommandHandler<RemoveItemFromBasketCommand, RemoveItemFromBasketResult>
     {
         public async Task<RemoveItemFromBasketResult> Handle(RemoveItemFromBasketCommand command, CancellationToken cancellationToken)
         {
-            var shoppingCart = await dbContext.ShoppingCarts
-                .Include(x => x.Items)
-                .SingleOrDefaultAsync(x => x.UserName == command.UserName, cancellationToken);
-            if (shoppingCart is null)
-            {
-                throw new BasketNotFoundException(command.UserName);
-            }
+            var shoppingCart = await basketRepository.GetBasket(command.UserName, false, cancellationToken);
+
             shoppingCart.RemoveItem(command.ProductId);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await basketRepository.SaveChangesAsync(cancellationToken);
             return new RemoveItemFromBasketResult(shoppingCart.Id);
         }
     }
