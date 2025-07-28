@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace Basket
 {
     public static class BasketModule
@@ -8,6 +6,8 @@ namespace Basket
         public static IServiceCollection AddBasketModule(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.Decorate<IBasketRepository, CachedBasketRepository>();
+
             //Data - infrastructure services
             var connectionString = configuration.GetConnectionString("Database");
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();

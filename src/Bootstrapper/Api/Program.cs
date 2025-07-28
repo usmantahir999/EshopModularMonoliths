@@ -10,6 +10,11 @@ var orderingAssembly = typeof(OrderingModule).Assembly;
 builder.Services.AddCarterWithAssemblies(catalogAssembly, basketAssembly);
 //Add mediatR, FluentValidation, and logging behaviors for all modules
 builder.Services.AddMediatRWithAssemblies(catalogAssembly, basketAssembly);
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
 //Add services to the container
 builder.Services.AddBasketModule(builder.Configuration)
                 .AddCatalogModule(builder.Configuration)

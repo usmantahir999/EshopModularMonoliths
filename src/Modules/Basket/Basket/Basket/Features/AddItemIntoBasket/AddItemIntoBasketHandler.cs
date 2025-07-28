@@ -28,7 +28,7 @@
                 request.ShoppingCartItem.Price,
                 request.ShoppingCartItem.ProductName
             );
-           await basketRepository.SaveChangesAsync(cancellationToken);
+           await basketRepository.SaveChangesAsync(request.UserName,cancellationToken);
            return new AddItemIntoBasketResult(shoppingCart.Id);
         }
     }
