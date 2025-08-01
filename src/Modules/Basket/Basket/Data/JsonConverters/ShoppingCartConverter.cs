@@ -3,35 +3,36 @@ using System.Text.Json.Serialization;
 
 namespace Basket.Data.JsonConverters
 {
-    public class ShoppingCartConverter : JsonConverter<ShoppingCartItem>
+    public class ShoppingCartConverter : JsonConverter<ShoppingCart>
     {
-        public override ShoppingCartItem? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ShoppingCart? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var jsonDocument = JsonDocument.ParseValue(ref reader);
             var rootElement = jsonDocument.RootElement;
 
             var id = rootElement.GetProperty("id").GetGuid();
-            var shoppingCartId = rootElement.GetProperty("shoppingCartId").GetGuid();
-            var productId = rootElement.GetProperty("productId").GetGuid();
-            var quantity = rootElement.GetProperty("quantity").GetInt32();
-            var color = rootElement.GetProperty("color").GetString()!;
-            var price = rootElement.GetProperty("price").GetDecimal();
-            var productName = rootElement.GetProperty("productName").GetString()!;
+            var userName = rootElement.GetProperty("userName").GetString()!;
+            var itemsElement = rootElement.GetProperty("items");
+            var shoppingCart = ShoppingCart.Create(id, userName);
+            var items = itemsElement.Deserialize<List<ShoppingCartItem>>(options);
+            if (items != null)
+            {
+                var itemsField = typeof(ShoppingCart).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+                itemsField?.SetValue(shoppingCart, items);
+            }
 
-            return new ShoppingCartItem(id, shoppingCartId, productId, quantity, color, price, productName);
+            return shoppingCart;
         }
 
-        public override void Write(Utf8JsonWriter writer, ShoppingCartItem value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ShoppingCart value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
             writer.WriteString("id", value.Id.ToString());
-            writer.WriteString("shoppingCartId", value.ShoppingCartId.ToString());
-            writer.WriteString("productId", value.ProductId.ToString());
-            writer.WriteNumber("quantity", value.Quantity);
-            writer.WriteString("color", value.Color);
-            writer.WriteNumber("price", value.Price);
-            writer.WriteString("productName", value.ProductName);
+            writer.WriteString("userName", value.UserName);
+
+            writer.WritePropertyName("items");
+            JsonSerializer.Serialize(writer, value.Items, options);
 
             writer.WriteEndObject();
         }
