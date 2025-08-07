@@ -10,4 +10,12 @@
     <ProjectReference Include="..\..\..\Shared\Shared\Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Orders\Dtos\" />
+    <Folder Include="Orders\Events\" />
+    <Folder Include="Orders\EventHandlers\" />
+    <Folder Include="Orders\Exceptions\" />
+    <Folder Include="Orders\Models\" />
+  </ItemGroup>
+
 </Project>
