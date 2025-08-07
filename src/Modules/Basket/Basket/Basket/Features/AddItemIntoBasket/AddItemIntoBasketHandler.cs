@@ -25,7 +25,7 @@ namespace Basket.Basket.Features.AddItemIntoBasket
 
             // Get latest product information and set Price and ProductName when adding item into SC
 
-            var result = await sender.Send(new GetProductByIdQuery(command.ShoppingCartItem.ProductId));
+            var result = await sender.Send(new GetProductByIdQuery(command.ShoppingCartItem.ProductId), cancellationToken);
 
             shoppingCart.AddItem(
                 command.ShoppingCartItem.ProductId,
