@@ -1,6 +1,13 @@
-﻿namespace Shared.Messaging.Extensions
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace Shared.Messaging.Extensions
 {
-    internal class MassTransitExtensions
+    public static class MassTransitExtensions
     {
+        public static IServiceCollection AddMassTransitExtensions(this IServiceCollection services, params Assembly[] assemblies)
+        {
+            return services;
+        }
     }
 }
