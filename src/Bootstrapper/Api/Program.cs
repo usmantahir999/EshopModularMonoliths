@@ -1,4 +1,6 @@
 
+using Keycloak.AuthServices.Authentication;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 //Add carter for all modules
@@ -16,6 +18,10 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 builder.Services.AddMassTransitExtensions(builder.Configuration, catalogAssembly, basketAssembly);
+
+builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
+builder.Services.AddAuthorization();
+
 //Add services to the container
 builder.Services.AddBasketModule(builder.Configuration)
                 .AddCatalogModule(builder.Configuration)
@@ -25,9 +31,10 @@ var app = builder.Build();
 
 //Configure the HTTP request pipeline.
 app.MapCarter();
-app.UseExceptionHandler(options => { });
 app.UseSerilogRequestLogging();
-
+app.UseExceptionHandler(options => { });
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseCatalogModule()
                 .UseBasketModule()
                 .UseOrderingModule();
