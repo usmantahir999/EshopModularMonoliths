@@ -28,3 +28,6 @@ https://www.keycloak.org/app/*
 
 //Web origins: 
 https://www.keycloak.org
+
+Migration for Order:
+Add-Migration InitialCreate -OutputDir Data/Migrations -Project Ordering -StartupProject Api -Context OrderingDbContext
