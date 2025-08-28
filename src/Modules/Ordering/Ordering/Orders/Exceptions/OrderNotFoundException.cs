@@ -1,6 +1,9 @@
-﻿namespace Ordering.Orders.Exceptions
+﻿using Shared.Exceptions;
+
+namespace Ordering.Orders.Exceptions
 {
-    internal class OrderNotFoundException
+    public class OrderNotFoundException(Guid orderId)
+     : NotFoundException("Order", orderId)
     {
     }
 }

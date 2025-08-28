@@ -1,6 +1,5 @@
-﻿namespace Ordering.Orders.Events
+﻿
+namespace Ordering.Orders.Events
 {
-    internal class OrderCreatedEvent
-    {
-    }
+    public record OrderCreatedEvent(Order Order): IDomainEvent;
 }
