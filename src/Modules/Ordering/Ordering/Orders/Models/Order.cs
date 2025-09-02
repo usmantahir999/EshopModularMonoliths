@@ -1,8 +1,4 @@
-﻿using Ordering.Orders.Events;
-using Ordering.Orders.ValueObjects;
-using Shared.DDD;
-
-namespace Ordering.Orders.Models;
+﻿namespace Ordering.Orders.Models;
 public class Order : Aggregate<Guid>
 {
     private readonly List<OrderItem> _items = new();
