@@ -17,9 +17,8 @@ namespace Basket.Basket.Features.CheckoutBasket
         }
     }
 
-    internal class CheckoutBasketHandler(IBasketRepository repository, IBus bus) : IRequestHandler<CheckoutBasketCommand, CheckoutBasketResult>
+    internal class CheckoutBasketHandler(BasketDbContext dbContext) : IRequestHandler<CheckoutBasketCommand, CheckoutBasketResult>
     {
-        public readonly IBus _bus = bus;
 
         public async Task<CheckoutBasketResult> Handle(CheckoutBasketCommand command, CancellationToken cancellationToken)
         {
@@ -28,19 +27,56 @@ namespace Basket.Basket.Features.CheckoutBasket
             // send basket checkout event to rabbitmq using masstransit
             // delete the basket
 
-            var basket = await repository.GetBasket(command.BasketCheckout.UserName, true, cancellationToken);
-            if (basket == null)
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+            try
             {
-                throw new BasketNotFoundException(command.BasketCheckout.UserName);
+                var basket = await dbContext.ShoppingCarts.Include(x => x.Items)
+                    .SingleOrDefaultAsync(x => x.UserName == command.BasketCheckout.UserName, cancellationToken);
+
+                if (basket == null)
+                {
+                    throw new BasketNotFoundException(command.BasketCheckout.UserName);
+                }
+                var eventMessage = command.BasketCheckout.Adapt<BasketCheckoutIntegrationEvent>();
+                eventMessage.TotalPrice = basket.TotalPrice;
+
+                // Create outbox message
+                var outboxMessage = new OutboxMessage
+                {
+                    Id = Guid.NewGuid(),
+                    Type = typeof(BasketCheckoutIntegrationEvent).AssemblyQualifiedName!,
+                    Data = System.Text.Json.JsonSerializer.Serialize(eventMessage),
+                    OccurredOn = DateTime.UtcNow
+                };
+                await dbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
+                dbContext.ShoppingCarts.Remove(basket);
+                await dbContext.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+                return new CheckoutBasketResult(true);
             }
-            var eventMessage = command.BasketCheckout.Adapt<BasketCheckoutIntegrationEvent>();
-            eventMessage.TotalPrice = basket.TotalPrice;
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return new CheckoutBasketResult(false);
+            }
 
-            await _bus.Publish(eventMessage, cancellationToken);
+            //////////////////////CHECKOUT BASKET WITH OUTBOX PATTERN//////////////////////
 
-            await repository.DeleteBasket(command.BasketCheckout.UserName, cancellationToken);
 
-            return new CheckoutBasketResult(true);
+            //var basket = await repository.GetBasket(command.BasketCheckout.UserName, true, cancellationToken);
+            //if (basket == null)
+            //{
+            //    throw new BasketNotFoundException(command.BasketCheckout.UserName);
+            //}
+            //var eventMessage = command.BasketCheckout.Adapt<BasketCheckoutIntegrationEvent>();
+            //eventMessage.TotalPrice = basket.TotalPrice;
+
+            //await _bus.Publish(eventMessage, cancellationToken);
+
+            //await repository.DeleteBasket(command.BasketCheckout.UserName, cancellationToken);
+
+            //return new CheckoutBasketResult(true);
         }
     }
 }
