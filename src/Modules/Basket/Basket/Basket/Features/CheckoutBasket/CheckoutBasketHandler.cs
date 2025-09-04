@@ -49,7 +49,7 @@ namespace Basket.Basket.Features.CheckoutBasket
                     Data = System.Text.Json.JsonSerializer.Serialize(eventMessage),
                     OccurredOn = DateTime.UtcNow
                 };
-                await dbContext.OutboxMessages.Add(outboxMessage, cancellationToken);
+                dbContext.OutboxMessages.Add(outboxMessage);
                 dbContext.ShoppingCarts.Remove(basket);
                 await dbContext.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
