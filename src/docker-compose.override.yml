@@ -23,7 +23,6 @@ services:
     container_name: seq
     environment:
       - ACCEPT_EULA=Y
-      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
     restart: always
     ports:
       - "5341:5341"
@@ -38,9 +37,8 @@ services:
     restart: always
     ports:
       - "5672:5672"
-      - "15672:15672"    
-      
-      
+      - "15672:15672"
+
   identity:
     container_name: identity
     environment:
@@ -56,7 +54,7 @@ services:
     ports:
       - "9090:9090"
     command:
-      - start-dev 
+      - start-dev
 
   api:
     environment:
@@ -83,7 +81,6 @@ services:
       - Serilog__Enrich__3=WithThreadId
       - Serilog__Properties__Application=EShop ASP.NET Core App
       - Serilog__Properties__Environment=Development
-
     depends_on:
       - eshopdb
       - distributedcache
